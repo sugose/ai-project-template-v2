@@ -21,8 +21,54 @@ this template. Full rationale in docs/decisions/0001-rebuild-workflow.md.
 1. Can the GitHub connector write PR comments, or only fetch diffs?
    Load-bearing for full autonomy. Must be confirmed before claiming
    two Adam touchpoints.
-2. Timeline for Routines secret injection from Anthropic.
-   Until this lands, Adam fires Crog manually (one paste, not relay).
+2. Clead→Crog direct firing — security problem identified, workaround
+   untested.
+
+   What was tried: two Routines were created (Clead with no repos
+   attached, Crog with all repos attached). Adam fires Clead via curl
+   with ADAM-AUTH in the text field. Clead produces a task spec and a
+   ready-to-fire curl command for Crog with CROG_TOKEN as a placeholder.
+   Adam substitutes the real token and fires Crog. This works but
+   requires Adam's manual token substitution.
+
+   Why full autonomy is blocked: embedding Crog's bearer token in
+   Clead's standing prompt caused a security failure — when Clead
+   forwarded the task to Crog, the entire context including the token
+   travelled with it. Crog correctly flagged it as prompt injection.
+   The token was exposed in the session transcript and had to be
+   rotated immediately.
+
+   The untested workaround — "curl-in-prompt": Clead includes the
+   actual curl command with the real token in the task text it sends,
+   rather than needing it as a runtime secret. This was identified as
+   a possible path to full autonomy but was never tested because of
+   the security concern above. If the token travels in the task text
+   rather than in the standing prompt, it may not trigger the same
+   injection flag — but this is unconfirmed.
+
+   Key lessons from the implementation session:
+   - Clead's Routine must have NO repos attached — attaching repos
+     causes CLAUDE.md files to override Clead's standing prompt
+     identity, which caused Clead to reject its own tasks as prompt
+     injection
+   - Crog's Routine should have all relevant repos attached
+   - Tokens are shown only once on generation — store immediately in
+     password manager; regenerating invalidates the previous token
+   - Git Bash multiline curl with backslash continuation fails
+     silently — always use single-line curl with -s flag
+   - Branch deletion via git push origin --delete returns 403 in both
+     Routine and interactive session environments — GitHub MCP
+     connector has no delete-branch tool; branch deletion requires
+     manual action or gh CLI workaround
+   - Routines have a 15/day run limit on Max plan — conserve credits
+
+   Current state: Adam manually substitutes token — one paste per PBI.
+   Next step to validate: test the curl-in-prompt approach in a
+   controlled session to see if it avoids the injection flag without
+   exposing the token in the standing prompt.
+
+   Blocked on: either (a) curl-in-prompt test succeeds, or (b)
+   Anthropic adds first-class secrets support to Routines.
 3. Spec-author blind spot: Clead writes the spec and reviews against it.
    A flawed spec passes compliance invisibly. Adam's intent gate helps
    but does not fully resolve this. Tracked as open.
