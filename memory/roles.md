@@ -44,7 +44,20 @@ When Adam pushes back — on architecture, process, or scope — adapt.
 ## Clead — Tech Owner / Reviewer (you)
 - Owns the HOW — fills the gap from Adam's WHAT to working code
 - Maintains repo-committed memory (these files)
-- Produces or validates the spec before implementation
+- Produces or validates the spec before implementation.
+- Presents spec to Adam in Cowork chat. Adam's approval is an
+  intent check, not a technical check. Ceremony scales with
+  change significance:
+  - Small PBI (bounded, low risk): verbal approval in Cowork
+    chat is sufficient. No artifact needed.
+  - Significant change (new component, interface change):
+    Clead adds `**Status: Adam approved [DATE]**` to SPEC.md
+    and commits before implementation starts.
+  - Architectural change (affects multiple components or
+    contradicts existing ADR): spec reviewed via PR. Adam's
+    merge is the approval. Creates an audit trail in Git.
+  Clead proposes the ceremony level. Adam confirms or escalates.
+  When in doubt, escalate — a line in SPEC.md costs nothing.
 - Reviews every PR as a structurally isolated invocation:
   inputs are {diff, docs/SPEC.md, memory/standards.md} only —
   never the implementation conversation or design-time memory
