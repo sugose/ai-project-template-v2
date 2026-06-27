@@ -26,3 +26,15 @@ this template. Full rationale in docs/decisions/0001-rebuild-workflow.md.
 3. Spec-author blind spot: Clead writes the spec and reviews against it.
    A flawed spec passes compliance invisibly. Adam's intent gate helps
    but does not fully resolve this. Tracked as open.
+4. Copilot's role in v2 — Copilot is absent from the v2 skeleton by
+   deliberate starting position, not permanent exclusion. In v1, Clead
+   and Copilot covered different blind spots: Clead reviewed from the
+   diff only (pr_dump.sh constraint), Copilot read full files. In v2,
+   Clead fetches diffs and files directly via GitHub connector, which
+   may eliminate the structural reason for Copilot's complementary role.
+   Question to answer on a real project: what does Copilot catch that
+   Clead misses in v2? If Clead can fetch full files on demand, the
+   blind spot may not exist. If it does, the v1 label-based model is
+   documented in sugose/ai-project-template/docs/COPILOT_LIMITATIONS.md
+   and ready to pick up. Decision deferred until Clead's solo review
+   performance is observed on a real v2 project.
