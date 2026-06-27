@@ -119,15 +119,98 @@ third-layer reviewer for complex src PRs.
   Cowork-Clead is both author and committer. Adam merges or,
   once trust is established, Cowork merges directly.
 
-- **[LATER] PBI-4.2** — Implement session-end autonomous write.
-  Use Cowork's native schedule skill to detect inactivity (default:
-  1 hour) and trigger session-end memory writes automatically.
-  Cowork-Clead assembles what changed, writes to the appropriate
-  memory files, commits, pushes, opens PR. Adam merges when back.
-  Trigger phrase "gn, kisses" (or similar) also triggers immediately
-  for clean session endings. Zero Routine executions. Zero Crog
-  involvement. Zero Adam touchpoints except merge.
-  Prerequisite: PBI-4.1 confirmed.
+- **[LATER] PBI-4.2** — Implement session-end autonomous write via
+  Cowork schedule skill.
+
+  ## What we want to achieve
+  When a Cowork-Clead session goes idle (Adam leaves without saying
+  goodbye, or says "gn, kisses" explicitly), Cowork-Clead should
+  automatically:
+  1. Assemble what changed during the session that isn't yet in the
+     memory files
+  2. Write to the appropriate files (decisions.md, context.md,
+     project.md per the session-end routine in CLAUDE.md)
+  3. Commit, push to a branch, open a PR
+  4. Adam merges when back
+
+  Zero Routine executions. Zero Crog involvement. Zero Adam
+  touchpoints except merge.
+
+  ## What needs to be investigated first
+
+  **Investigation A — Schedule skill capabilities:**
+  Ask Cowork-Clead directly:
+  1. Can the schedule skill detect inactivity (no user input for N
+     minutes) or does it only run on fixed schedules (every hour
+     at :00)?
+  2. If scheduled on inactivity, can Cowork write to files in the
+     working folder and commit as part of that scheduled task?
+  3. Can a scheduled task open a PR, or does it only have file
+     system access?
+
+  The answers determine whether inactivity-triggered session-end
+  is feasible today or requires a different mechanism.
+
+  **Investigation B — Trigger mechanisms:**
+  Two triggers needed, not one:
+  - **Explicit:** Adam says "gn, kisses" (or any agreed phrase).
+    Cowork-Clead recognises it as a session-end signal and runs
+    the persist routine immediately.
+  - **Implicit:** No user input for N minutes (default: 60).
+    Schedule skill fires, Cowork-Clead runs the persist routine
+    automatically. Covers the "football came on" scenario.
+
+  Determine whether both triggers can be wired via the schedule
+  skill, or whether the implicit trigger needs a different approach
+  (e.g. GitHub Actions cron that checks last memory file commit
+  timestamp and fires a prompt if stale).
+
+  **Investigation C — What "session-end persist" actually writes:**
+  The session-end routine (to be added to CLAUDE.md per the
+  session-end PR already in progress) defines what goes where.
+  Verify that Cowork-Clead can reliably determine what is new
+  versus what is already in the files — to avoid duplicating
+  existing content on every scheduled run.
+
+  ## Implementation plan (once investigations complete)
+
+  **Step 1 — Explicit trigger:**
+  Add recognised session-end phrases to CLAUDE.md ("gn", "gn kisses",
+  "bye", "wrap up", "closing down"). When Cowork-Clead detects any
+  of these, run the session-end persist routine immediately before
+  the session goes idle.
+
+  **Step 2 — Implicit trigger (inactivity):**
+  If schedule skill supports inactivity detection: configure a
+  scheduled task that fires after 60 minutes of no user input and
+  runs the session-end persist routine.
+  If schedule skill only supports fixed schedules: configure an
+  hourly check that reads the last memory file commit timestamp,
+  compares to current time, and only runs the persist routine if
+  the gap suggests an unclean session end.
+
+  **Step 3 — File write and PR:**
+  Cowork-Clead writes directly to working folder files (no Crog),
+  commits, pushes to branch `session/persist-<timestamp>`, opens PR.
+  PR title: "Session persist — [DATE] [TIME]"
+  PR body: summary of what was written and why.
+
+  **Step 4 — Adam merges when back:**
+  No review gate on session persist PRs — Cowork is both author
+  and the content source. Adam's merge is the only touchpoint.
+  If Adam trusts the routine sufficiently, auto-merge on CI green
+  is a further simplification (future consideration).
+
+  ## Success criteria
+  - Adam closes laptop mid-session without saying anything
+  - 60 minutes later, a PR appears in GitHub with the session's
+    key decisions and context written to memory files
+  - Adam merges next morning
+  - Cowork-Clead starts the next session fully oriented with no
+    gap to bridge
+
+  ## Prerequisite
+  PBI-4.1 (Cowork direct file write capability) confirmed.
 
 - **[LATER] PBI-4.3** — Verify GitHub connector write access.
   Confirm Cowork's GitHub connector can post PR comments, not just
