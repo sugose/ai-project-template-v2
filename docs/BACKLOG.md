@@ -105,13 +105,78 @@ works on a real, complex project.
 
 ---
 
-## Decision log
+## Phase 4 — Autonomous PR loop and Copi reactivation
+
+**Goal:** Eliminate Adam's remaining manual touchpoints for doc-only
+changes and session-end writes, and reactivate Copi as a specialist
+third-layer reviewer for complex src PRs.
+
+- **[LATER] PBI-4.1** — Verify Cowork direct file write capability.
+  Test whether Cowork-Clead can write files, commit, push, and open
+  a PR directly from its working folder without going through Crog.
+  If confirmed: doc-only changes (memory files, backlog, CHANGELOG,
+  session-end writes) bypass Crog and the review gate entirely.
+  Cowork-Clead is both author and committer. Adam merges or,
+  once trust is established, Cowork merges directly.
+
+- **[LATER] PBI-4.2** — Implement session-end autonomous write.
+  Use Cowork's native schedule skill to detect inactivity (default:
+  1 hour) and trigger session-end memory writes automatically.
+  Cowork-Clead assembles what changed, writes to the appropriate
+  memory files, commits, pushes, opens PR. Adam merges when back.
+  Trigger phrase "gn, kisses" (or similar) also triggers immediately
+  for clean session endings. Zero Routine executions. Zero Crog
+  involvement. Zero Adam touchpoints except merge.
+  Prerequisite: PBI-4.1 confirmed.
+
+- **[LATER] PBI-4.3** — Verify GitHub connector write access.
+  Confirm Cowork's GitHub connector can post PR comments, not just
+  fetch diffs. Load-bearing for the autonomous review trigger (PR
+  comment as event bus signal). If confirmed, enables Cowork-Clead
+  to post verdicts, fix prompts, and approval comments directly to
+  PRs without Adam relay. See also memory/decisions.md open
+  question #1.
+
+- **[LATER] PBI-4.4** — Wire autonomous src PR loop (Path B).
+  GitHub Actions holds Crog's bearer token as an Actions secret.
+  Cowork-Clead posts a task marker comment on a PR or sentinel
+  location. Actions detects marker, fires Crog with clean task
+  (no embedded credentials). Crog implements, opens PR, posts
+  pr_done. Actions fires Cowork-Clead review Routine with scoped
+  inputs {diff, SPEC.md, Review Standard}. Clead reviews, posts
+  approval. Actions fires Crog merge instruction. Adam asleep.
+  Prerequisites: PBI-4.1, PBI-4.3 confirmed.
+  Reference: memory/decisions.md open question #2 (Path B) for
+  full findings and dead ends already investigated.
+
+- **[LATER] PBI-4.5** — Reactivate Copi as Layer 3 reviewer for
+  complex src PRs.
+  Three-layer review model:
+  - Layer 1: Cowork-Clead alone — doc-only, memory writes (no review)
+  - Layer 2: Crog implements, Clead reviews — standard src PRs
+  - Layer 3: Copi added — large/complex/multi-file src PRs where
+    cross-file consistency is the real risk
+  Copi invoked by Clead's explicit decision per PR, not by default.
+  Label-based trigger model from v1 applies unchanged.
+  Reference: sugose/ai-project-template docs/COPILOT_LIMITATIONS.md
+  for all operational lessons — do not re-investigate dead ends
+  already documented there.
+  Decision criteria for Layer 3: multi-file changes, interface
+  changes, significant new components, any PR where Clead's
+  diff-only review flags uncertainty about cross-file consistency.
+
+---
+
+## Decision log (updated)
 
 | Date | Decision | Rationale |
 |---|---|---|
 | 2026-06-27 | Language packs not carried over in skeleton | Skeleton is workflow structure only. Packs ported as explicit PBIs so each is reviewed against v2 structure. |
 | 2026-06-27 | Bootstrap wizard deferred to PBI-1.4 | Language packs must exist before wizard can generate them. |
 | 2026-06-27 | python-blackjack-v2 as pilot project | Real, complex, known codebase. Ideal for proving unproven pieces under real PR load. |
+| 2026-06-27 | Doc-only changes owned by Cowork-Clead, no review gate | Cowork is both author and reviewer for its own memory writes — review adds no value. Review gate reserved for src changes where Crog implements and Clead reviews independently. |
+| 2026-06-27 | Copi reactivated as Layer 3 only for complex src PRs | Copi's value is cross-file consistency on large/complex changes. Default reviewer role removed — called in deliberately by Clead's judgment. |
+| 2026-06-27 | Session-end autonomous write via Cowork schedule skill | Inactivity timeout replaces "gn, kisses" as primary trigger. Same mechanism, no Routine executions, no Crog, no relay. |
 
 ---
 
