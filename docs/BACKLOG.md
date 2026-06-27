@@ -119,98 +119,95 @@ third-layer reviewer for complex src PRs.
   Cowork-Clead is both author and committer. Adam merges or,
   once trust is established, Cowork merges directly.
 
-- **[LATER] PBI-4.2** — Implement session-end autonomous write via
-  Cowork schedule skill.
+- **[LATER] PBI-4.2** — Implement event-driven memory writes in CLAUDE.md.
+
+  ## Reframe (from Cowork-Clead, 2026-06-27)
+  Persistence is never automatic on session end. It only happens if
+  something in a turn triggers it:
+  - Adam explicitly asks ("update the memory files before we wrap")
+  - An instruction in CLAUDE.md tells Cowork-Clead to persist at a
+    natural stopping point
+  - Cowork-Clead proactively decides a turn produced something worth
+    persisting and writes it then and there
+
+  The original framing — "trigger a session-end write on inactivity"
+  — is the wrong model. The right model is event-driven writes at the
+  moment something worth keeping happens. If every meaningful event
+  triggers a write immediately, the session-end problem disappears.
+  It doesn't matter if Adam leaves mid-session without saying anything.
+  The last write happened when the last meaningful thing happened.
+
+  The football problem resolves itself: if Adam leaves before anything
+  was decided or committed, there's nothing worth persisting. The
+  conversation was exploratory. It belongs in the chatlog, not the
+  memory files.
 
   ## What we want to achieve
-  When a Cowork-Clead session goes idle (Adam leaves without saying
-  goodbye, or says "gn, kisses" explicitly), Cowork-Clead should
-  automatically:
-  1. Assemble what changed during the session that isn't yet in the
-     memory files
-  2. Write to the appropriate files (decisions.md, context.md,
-     project.md per the session-end routine in CLAUDE.md)
-  3. Commit, push to a branch, open a PR
-  4. Adam merges when back
+  CLAUDE.md contains explicit event-triggered write rules that
+  Cowork-Clead executes turn by turn throughout the session:
 
-  Zero Routine executions. Zero Crog involvement. Zero Adam
-  touchpoints except merge.
+  | Event | Write target | What to write |
+  |---|---|---|
+  | Decision made | `memory/decisions.md` | Decision + rationale, not discussion |
+  | PR opened | `memory/context.md` | What changed and why |
+  | Spec approved by Adam | `memory/project.md` | Updated scope/goal if changed |
+  | Adam makes a WHAT call | `memory/decisions.md` | The call + which axis it came from |
+  | Architectural direction set | `memory/decisions.md` | Decision + ADR reference if applicable |
 
-  ## What needs to be investigated first
+  Rules: never write derivable state (current PBI, PR status). Never
+  duplicate what's already there. Write the decision, not the
+  discussion.
 
-  **Investigation A — Schedule skill capabilities:**
-  Ask Cowork-Clead directly:
-  1. Can the schedule skill detect inactivity (no user input for N
-     minutes) or does it only run on fixed schedules (every hour
-     at :00)?
-  2. If scheduled on inactivity, can Cowork write to files in the
-     working folder and commit as part of that scheduled task?
-  3. Can a scheduled task open a PR, or does it only have file
-     system access?
+  ## What needs to be added to CLAUDE.md
+  A new section: **Session memory rules** — numbered, explicit,
+  event-triggered. Example structure:
 
-  The answers determine whether inactivity-triggered session-end
-  is feasible today or requires a different mechanism.
+  ```
+  ## Session memory rules
 
-  **Investigation B — Trigger mechanisms:**
-  Two triggers needed, not one:
-  - **Explicit:** Adam says "gn, kisses" (or any agreed phrase).
-    Cowork-Clead recognises it as a session-end signal and runs
-    the persist routine immediately.
-  - **Implicit:** No user input for N minutes (default: 60).
-    Schedule skill fires, Cowork-Clead runs the persist routine
-    automatically. Covers the "football came on" scenario.
+  Execute these rules turn by turn. Do not wait for session end.
 
-  Determine whether both triggers can be wired via the schedule
-  skill, or whether the implicit trigger needs a different approach
-  (e.g. GitHub Actions cron that checks last memory file commit
-  timestamp and fires a prompt if stale).
+  1. When a decision is made → append to memory/decisions.md
+     (decision + why, not the conversation that led there)
+  2. When a PR is opened → update memory/context.md
+     (what changed, why, current state)
+  3. When Adam approves a spec → update memory/project.md
+     if scope or goals changed
+  4. When Adam makes a WHAT call that changes direction →
+     append to memory/decisions.md immediately
+  5. When asked "remember this" or "note that" → write to the
+     appropriate file immediately
+  6. Never write derivable state (current PBI, PR status)
+  7. Never duplicate existing content — check before writing
+  8. After writing to any memory file → open a PR via Crog
+     (or write directly if PBI-4.1 confirmed)
+  ```
 
-  **Investigation C — What "session-end persist" actually writes:**
-  The session-end routine (to be added to CLAUDE.md per the
-  session-end PR already in progress) defines what goes where.
-  Verify that Cowork-Clead can reliably determine what is new
-  versus what is already in the files — to avoid duplicating
-  existing content on every scheduled run.
+  ## Implementation plan
+  1. Draft the Session memory rules section for CLAUDE.md
+  2. Adam reviews and approves the rules (WHAT gate — these are
+     Adam's rules about how he wants the system to behave)
+  3. Crog adds the section to CLAUDE.md via PR
+  4. Cowork-Clead operates under the new rules from next session
 
-  ## Implementation plan (once investigations complete)
-
-  **Step 1 — Explicit trigger:**
-  Add recognised session-end phrases to CLAUDE.md ("gn", "gn kisses",
-  "bye", "wrap up", "closing down"). When Cowork-Clead detects any
-  of these, run the session-end persist routine immediately before
-  the session goes idle.
-
-  **Step 2 — Implicit trigger (inactivity):**
-  If schedule skill supports inactivity detection: configure a
-  scheduled task that fires after 60 minutes of no user input and
-  runs the session-end persist routine.
-  If schedule skill only supports fixed schedules: configure an
-  hourly check that reads the last memory file commit timestamp,
-  compares to current time, and only runs the persist routine if
-  the gap suggests an unclean session end.
-
-  **Step 3 — File write and PR:**
-  Cowork-Clead writes directly to working folder files (no Crog),
-  commits, pushes to branch `session/persist-<timestamp>`, opens PR.
-  PR title: "Session persist — [DATE] [TIME]"
-  PR body: summary of what was written and why.
-
-  **Step 4 — Adam merges when back:**
-  No review gate on session persist PRs — Cowork is both author
-  and the content source. Adam's merge is the only touchpoint.
-  If Adam trusts the routine sufficiently, auto-merge on CI green
-  is a further simplification (future consideration).
+  ## What this replaces
+  The schedule skill investigation (Investigation A, B, C from the
+  original PBI-4.2) is deprioritised. Event-driven writes solve the
+  problem more cleanly than inactivity detection. The schedule skill
+  may still be useful for other purposes but is not the solution
+  to session memory persistence.
 
   ## Success criteria
-  - Adam closes laptop mid-session without saying anything
-  - 60 minutes later, a PR appears in GitHub with the session's
-    key decisions and context written to memory files
-  - Adam merges next morning
-  - Cowork-Clead starts the next session fully oriented with no
-    gap to bridge
+  - Adam makes a decision mid-session
+  - Without being asked, Cowork-Clead appends it to decisions.md
+    and opens a PR (or commits directly if PBI-4.1 confirmed)
+  - Next session starts with that decision already in the memory files
+  - No gap to bridge, no chatlog to paste, no "where were we"
 
   ## Prerequisite
-  PBI-4.1 (Cowork direct file write capability) confirmed.
+  PBI-4.1 (Cowork direct file write) confirms whether Cowork-Clead
+  can commit directly or must go through Crog. Either path works —
+  the event-driven write rules are the same regardless.
 
 - **[LATER] PBI-4.3** — Verify GitHub connector write access.
   Confirm Cowork's GitHub connector can post PR comments, not just
