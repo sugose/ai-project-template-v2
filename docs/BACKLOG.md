@@ -27,6 +27,18 @@ get a working project in any supported language.
   (`languages/python/`) — ci.yml, code-standards.md, pyproject.toml,
   requirements.txt, requirements-dev.txt, pre-commit-config.yaml,
   gitignore, vscode settings, placeholder test. Adapt to v2 structure.
+  Also create `docs/DEV_INFRASTRUCTURE.md` covering:
+  - Language-agnostic content: new machine setup sequence, CI/CD
+    philosophy, branch protection runbook, commit message convention
+  - Python-specific content: venv setup (macOS and Windows),
+    pip install sequence, pre-commit install, pytest run, ruff check,
+    always run as module not script (`python -m src.<module>.main`),
+    the MagicMock Python 3.14 gotcha (construct mock before patch
+    context, not inside it — see v1 docs/DEV_INFRASTRUCTURE.md
+    section 5 for full detail)
+  PBIs 1.2 and 1.3 extend DEV_INFRASTRUCTURE.md for their languages.
+  Reference: sugose/ai-project-template `docs/DEV_INFRASTRUCTURE.md`
+  for the full v1 content to inform (not copy) this document.
 
 - **[NEXT] PBI-1.2** — Port Node/TypeScript language pack from v1
   (`languages/node/`) — ci.yml, code-standards.md, package.json,

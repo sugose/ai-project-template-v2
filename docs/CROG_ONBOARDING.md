@@ -72,6 +72,24 @@ Happy-path rows are optional.
 
 ---
 
+## Spec approval — what it means for Crog
+
+Adam's spec approval before you start a PBI is an intent check,
+not a technical check. Adam is confirming the spec captures what
+he wants — not that the architecture is correct. Clead owns
+technical correctness.
+
+The approval ceremony scales with change significance:
+- Small PBI: Adam says "approved" in Cowork chat. You may start.
+- Significant change: Clead commits `**Status: Adam approved
+  [DATE]**` to SPEC.md before you start. Check for this line.
+- Architectural change: spec was merged via PR. The merge is
+  the approval. Check git log on SPEC.md if uncertain.
+
+If you start a PBI and cannot find evidence of spec approval
+at the appropriate ceremony level, stop and flag it. Do not
+implement against an unapproved spec.
+
 ## On ported code
 
 If you are porting tests or src from a previous project:
