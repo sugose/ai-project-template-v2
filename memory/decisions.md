@@ -21,8 +21,317 @@ this template. Full rationale in docs/decisions/0001-rebuild-workflow.md.
 1. Can the GitHub connector write PR comments, or only fetch diffs?
    Load-bearing for full autonomy. Must be confirmed before claiming
    two Adam touchpoints.
-2. Timeline for Routines secret injection from Anthropic.
-   Until this lands, Adam fires Crog manually (one paste, not relay).
+2. Clead→Crog direct firing — full findings, dead ends documented,
+   one viable path remaining. Complete history below so future Clead
+   can execute without reconstructing the reasoning.
+
+   ## What was built and confirmed working
+
+   Two Claude Code Routines exist at claude.ai/code/routines:
+
+   **Clead Routine (Tech Owner)**
+   - Fire URL: https://api.anthropic.com/v1/claude_code/routines/trig_01YML4ytE4BkmnHV8oG3duJt/fire
+   - NO repositories attached — mandatory, see Dead End A below
+   - Standing prompt: includes ADAM-AUTH verification, task drafting,
+     curl production, and "never attempt outbound HTTP POST" rule
+     (see Dead End B below — this rule exists for a reason)
+
+   **Crog Routine (Task Executor)**
+   - Fire URL: https://api.anthropic.com/v1/claude_code/routines/trig_01GPaZsSxuy1xamYuF1uRVnC/fire
+   - All sugose repos attached
+   - Token: regenerated multiple times — always store current token
+     in password manager immediately; regenerating invalidates previous
+
+   **Correct curl format — mandatory single line, -s flag in Git Bash:**
+   ```bash
+   curl -s -X POST "https://api.anthropic.com/v1/claude_code/routines/<ROUTINE_ID>/fire" -H "Authorization: Bearer <TOKEN>" -H "anthropic-version: 2023-06-01" -H "anthropic-beta: experimental-cc-routine-2026-04-01" -H "Content-Type: application/json" -d "{\"text\": \"<TASK>\"}"
+   ```
+   Multiline curl with backslash continuation fails silently in Git Bash.
+   Payload field is "text" not "prompt".
+
+   **ADAM-AUTH scheme:**
+   Adam fires Clead with "ADAM-AUTH" in the text field. Clead
+   verifies before acting. Without it, Clead rejects as untrusted.
+
+   ---
+
+   ## Current working state (the only compliant option today)
+
+   1. Adam fires Clead Routine via curl with ADAM-AUTH + task in text
+   2. Clead produces task spec and curl with <CROG_TOKEN> placeholder
+   3. Adam substitutes real token from password manager, fires Crog CLI
+      (not Routine — see Execution Model below)
+   4. Crog implements, opens PR
+   5. Adam pastes PR URL to Clead in Cowork
+   6. Clead reviews, posts verdict to PR
+   7. Adam merges
+
+   Note: Crog runs as Claude Code CLI in steps 3-4, not as a Routine.
+   This is important — see Execution Model section below.
+
+   ---
+
+   ## Execution model: Routine vs CLI for Crog
+
+   Crog can run in two modes:
+
+   **Routine mode:** Crog fired via curl POST to Routine endpoint.
+   Counts against 15/day Routine limit (Max plan). Autonomous once
+   fired — no Adam involvement.
+
+   **CLI mode:** Adam opens Claude Code terminal, pastes task prompt.
+   No Routine invocation. No daily limit. Requires Adam's presence
+   to start but zero constraints after that.
+
+   **The daily limit reality (confirmed from Anthropic docs):**
+   Max plan: 15 Routine executions per day total across all Routines.
+   Pro plan: 5/day. Team/Enterprise: 25/day.
+   Extra executions available via "extra usage" — pricing unconfirmed.
+   Reset cadence: daily (exact reset time and timezone unconfirmed —
+   needs verification; Adam is in Stockholm/CEST which is UTC+2).
+
+   **At 4 Routine executions per PR (Clead task + Crog implement +
+   Clead review + Crog changelog), Max plan allows 3-4 PRs/day.**
+   bj-v1 ran ~14 PRs/day during active sprints. Incompatible.
+
+   **At 2 Routine executions per PR (Clead only, Crog runs as CLI),
+   Max plan allows ~7 PRs/day.** More viable for normal cadence.
+   Still below sprint pace.
+
+   **At 1 Routine execution per PR (Clead review only, everything
+   else CLI or Actions), Max plan allows 15 PRs/day.** Matches
+   bj-v1 sprint pace. Requires Path B (see below).
+
+   ---
+
+   ## Dead ends — evaluated and non-compliant with our setup
+
+   ### Dead End A — Repos attached to Clead Routine
+   Attaching repos to Clead's Routine caused CLAUDE.md files to
+   auto-load and override Clead's standing prompt identity. Clead
+   started rejecting its own legitimate tasks as prompt injection.
+   **Fix confirmed:** Clead Routine must have NO repos attached. Ever.
+   Crog Routine has all repos attached. This separation is mandatory.
+
+   ### Dead End B — Token in Clead standing prompt
+   Embedding Crog's bearer token in Clead's standing prompt caused
+   security failure: token travelled in forwarded context, Crog
+   flagged it as prompt injection, token exposed in transcript,
+   had to be rotated immediately.
+   **Status:** Dead end. Token removed from standing prompt entirely.
+   "Never attempt outbound HTTP POST" rule added as safety measure.
+
+   ### Dead End C — Token in task payload (curl-in-prompt)
+   Proposed workaround: pass Crog's token to Clead via Adam's text
+   field at fire time. Clead extracts and uses once. Never persists.
+   **Blocked by two independent problems:**
+   1. Clead's standing prompt explicitly forbids outbound HTTP POST
+      calls (rule added after Dead End B). The rule exists for a
+      reason — do not remove without solving the network problem first.
+   2. Routine network policy: Default environment blocks outbound
+      requests to arbitrary domains with 403/host_not_allowed.
+      api.anthropic.com is not in the default allowed list. Clead's
+      Routine cannot POST to Crog's Routine endpoint unless
+      api.anthropic.com is added to allowed domains in Routine config.
+      This has not been tested. Worth trying — but even if it works,
+      Dead End B's security concern remains.
+   3. Crog's own security posture: confirmed in live test that Crog
+      blocks payloads containing embedded bearer tokens as prompt
+      injection, regardless of how they arrive.
+   **Status:** Dead end unless all three problems are solved
+   simultaneously. Do not attempt without addressing all three.
+
+   ### Dead End D — Routines as primary execution model at sprint pace
+   At 4 Routine executions per PR and 15/day Max limit: 3-4 PRs/day
+   maximum. bj-v1 ran ~14 PRs/day. Factor of ~4 short of sprint pace.
+   Even with secrets support this doesn't change — the limit is on
+   Routine invocations, not on token security.
+   **Status:** Non-compliant with sprint pace. Routines suitable for
+   low-cadence work only unless daily limit is raised or extra usage
+   pricing makes it viable.
+
+   ---
+
+   ## Billing context (important — read before investing in Routines)
+
+   **Routines daily limit:** 15/day on Max plan. Shared across all
+   Routines (Clead + Crog combined). Not per-Routine.
+
+   **June 15 billing change:** Anthropic announced moving Agent SDK,
+   headless Claude Code, Claude Code GitHub Actions, and third-party
+   agents to a separate monthly credit ($200 for Max 20x) billed at
+   API rates. **This change was paused on June 15, 2026 — it is not
+   currently in effect.** Subscription limits unchanged as of session
+   date. Anthropic will give advance notice before any future change.
+   However: when it does land, GitHub Actions firing Crog (Path B)
+   would consume from the Agent SDK credit, not the subscription.
+   Plan accordingly.
+
+   **Shared pool:** Interactive sessions (Cowork, Claude Code CLI,
+   Claude chat) and Routines draw from the same subscription pool.
+   Heavy Routine use competes with Cowork sessions.
+
+   **No API endpoint for remaining credits:** Anthropic does not
+   expose remaining Routine credit via API. Only option is checking
+   the console manually or maintaining a counter.
+
+   ---
+
+   ## Credit tracking — proposed mechanism
+
+   Since no API endpoint exists, tracking requires cooperation between
+   Clead and Crog. Both agents increment a shared counter at the start
+   of every execution.
+
+   **The counter must NOT live in Git** — a commit per Routine
+   execution pollutes git history with meaningless noise and requires
+   direct main access.
+
+   **Options for storage (in order of preference):**
+   1. GitHub repository variable (via GitHub API) — both agents can
+      read/write, no git commits, persists across sessions, Adam can
+      check in GitHub UI. Recommended.
+   2. Private GitHub Gist — both agents can read/write via GitHub API,
+      persists, no git commits. Fallback if repo variables don't work.
+   3. Manual — Adam checks Anthropic console at session start and
+      tells Clead the starting count.
+
+   **What to track:**
+   ```
+   Daily limit: 15 (Max plan)
+   Reset time: [TBC — confirm exact UTC time and verify in Stockholm/CEST]
+   Today's date: [DATE]
+   Executions used today: [N]
+   Executions remaining: [15-N]
+   Last updated by: [Clead|Crog]
+   Last updated at: [TIMESTAMP]
+   ```
+
+   **Reset time matters:** If close to reset, use remaining credits
+   rather than switching to CLI. If far from reset and credits low,
+   switch to CLI mode for the session. Adam is in Stockholm (CEST =
+   UTC+2, CET = UTC+1 in winter). Reset time needs to be expressed
+   in Stockholm local time for this to be actionable.
+
+   ---
+
+   ## The session mode router
+
+   At the start of each session, Clead checks available Routine
+   credits and recommends a mode for the day. This is a per-session
+   decision, not per-PR, to avoid cognitive overhead of switching
+   mid-session.
+
+   **Router logic:**
+   ```
+   inputs:
+     credits_remaining: N  (from counter or Adam's console check)
+     prs_expected_today: M  (Adam provides at session start)
+     time_to_reset: T  (calculated from reset time in Stockholm TZ)
+     path_b_confirmed: true/false
+
+   if T < 30 minutes:
+     → use remaining credits now, full reset imminent
+     → announce: "Reset in [T] mins — using Routine mode for
+       current PRs, full credits available after reset"
+
+   if path_b_confirmed AND credits_remaining >= M:
+     → Routine mode: 1 execution per PR (Clead review only)
+     → announce: "Routine mode — [N] credits, [M] PRs expected,
+       sufficient headroom"
+
+   if NOT path_b_confirmed AND credits_remaining >= M × 2:
+     → Hybrid mode: Clead as Routine, Crog as CLI
+     → 2 executions per PR (Clead task + Clead review)
+     → announce: "Hybrid mode — Crog runs as CLI, [N] credits
+       for [M] PRs"
+
+   if credits_remaining < threshold:
+     → CLI mode: Crog as CLI, Clead as Cowork (no Routine firing)
+     → 0 Routine executions per PR
+     → announce: "CLI mode — credits low ([N] remaining),
+       all PRs via manual flow today"
+   ```
+
+   Clead announces the mode at session start and Adam knows what
+   to expect for the day.
+
+   ---
+
+   ## Path B — the one viable path to reducing Routine executions
+
+   **What it is:** GitHub Actions holds Crog's token as an Actions
+   secret and fires the curl when triggered by a specific PR comment
+   marker from Clead. Clead never touches the token. Crog receives
+   a clean task with no embedded credentials. Crog runs as a Routine
+   triggered by Actions HTTP call — but this counts as an Actions
+   workflow call, not a Routine invocation against the daily limit.
+
+   **Why it avoids the dead ends:**
+   - Token never in Clead context → no Dead End B
+   - Token never in task payload → no Dead End C problem 3
+   - Actions makes the HTTP call, not Clead → no Dead End C problem 1/2
+   - Crog receives clean task → no prompt injection flag
+
+   **What it enables:**
+   - If Path B confirmed: 1 Routine execution per PR (Clead review
+     only) → 15 PRs/day on Max plan → matches bj-v1 sprint pace
+   - Crog's token stored as GitHub Actions secret → never in any
+     Claude context ever
+
+   **What needs validating:**
+   1. GitHub Actions can successfully POST to Crog's Routine fire
+      endpoint (api.anthropic.com) — no network restriction on
+      Actions side
+   2. Crog's security posture accepts tasks arriving via Actions
+      POST without flagging as injection (should be fine since no
+      embedded credentials in the task text)
+   3. Clead can post a marker comment to a PR via GitHub connector
+      (the write access question — open question #1)
+
+   **How to test:** Create a simple GitHub Actions workflow that
+   POSTs a test task to Crog's fire URL using a stored secret.
+   Check whether Crog accepts and executes. This is PBI-2.2 in
+   the backlog.
+
+   **Billing note:** When the June 15 Agent SDK credit split
+   eventually lands, GitHub Actions firing Crog will consume from
+   the Agent SDK credit ($200/month on Max 20x), not the
+   subscription. At API rates this is still likely affordable for
+   development pace — but confirm before relying on it.
+
+   ---
+
+   ## Operational lessons (hard-won, do not re-learn these)
+
+   - Clead Routine: NO repos attached. Ever. Non-negotiable.
+   - Crog Routine: all relevant repos attached.
+   - Tokens shown once on generation — store immediately in
+     password manager. Regenerating invalidates previous token.
+   - Single-line curl only in Git Bash. -s flag mandatory.
+   - anthropic-beta header required: experimental-cc-routine-2026-04-01
+   - Payload field is "text" not "prompt"
+   - 15 Routine runs per day on Max plan — shared across all Routines
+   - Routine network policy blocks outbound HTTP to arbitrary domains
+     by default — api.anthropic.com not in default allowlist
+   - Crog's security posture blocks embedded credentials in payloads
+   - Branch deletion via git push origin --delete returns 403 in
+     Routine environments — use gh pr merge --delete-branch instead
+   - Interactive CLI sessions (Cowork, Claude Code terminal) do not
+     count against Routine daily limit
+   - June 15 billing change paused — current subscription limits
+     unchanged, but expect it to land eventually
+
+   ---
+
+   ## Summary — what to do next
+
+   1. Confirm Routine reset time and express in Stockholm/CEST
+   2. Implement credit counter as GitHub repository variable
+   3. Test Path B: GitHub Actions → Crog Routine fire endpoint
+   4. If Path B works: implement session mode router in Clead
+   5. If Path B fails: CLI mode is the default, Routines for
+      low-cadence work only
 3. Spec-author blind spot: Clead writes the spec and reviews against it.
    A flawed spec passes compliance invisibly. Adam's intent gate helps
    but does not fully resolve this. Tracked as open.
