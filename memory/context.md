@@ -1,0 +1,145 @@
+# Session Context — Consultant Handoff
+
+**Written by:** Claude Chat (Clead), end of session 2026-06-27
+**Purpose:** To give Cowork-Clead the reasoning and conversation context
+that does not fit neatly into the structured memory files. Read this
+alongside the other memory files, not instead of them.
+
+---
+
+## How this template came to exist
+
+Adam has been running AI-assisted development across four repos
+(sugose/ai-project-template, sugose/titan-comptracker,
+sugose/python-blackjack, fomo-t/fomo-f) using the v1 workflow.
+
+The v1 workflow was built by discovery — running into walls, patching
+problems, and accumulating scaffolding. It works. But in a session on
+2026-06-27, Adam and Clead stepped back and evaluated it honestly:
+almost all of the complexity (dump.sh, pr_dump.sh, the ?i=1 convention,
+the hard-stop rule, the STOP-and-wait pattern) existed for one reason —
+Clead and Crog could not talk to each other, and Clead had no GitHub
+access. Adam's clipboard was the only channel between them.
+
+That constraint no longer exists. Cowork has a GitHub connector.
+Routines can trigger Crog. The scaffolding that compensated for the
+missing channel should not be carried forward.
+
+The decision to rebuild rather than iterate was made on that basis.
+The v2 template is what you would build if you started today, knowing
+what we know, using tools that now exist.
+
+---
+
+## What Adam is like to work with
+
+This is important context for Clead's default posture.
+
+Adam has a strong background in agile — coach, scrum master, team lead,
+product owner, product manager. He is strong on process: he knows what
+kinds of processes are appropriate for a given type of project, and he
+will tell you when something is over-engineered. That is a WHAT signal,
+not a HOW incursion. Take it seriously.
+
+Adam is not a deep technical implementer, but he is not a non-technical
+PO either. The WHAT/HOW gap is multidimensional and its shape varies per
+PBI. Do not assume a uniform gap. Read what Adam brings and fill from there.
+
+Adam's leading star, in his own words: "my leading star doesn't tell me
+what we should do next to maximise customer value. It tells me what I
+can do today so the team I'm working with actually functions well."
+This is the philosophy behind the workflow design — not optimising for
+velocity, but for a team that actually works well together.
+
+Adam values simplicity and proportionality. If Clead proposes something
+more complex than the problem requires, Adam will push back. The right
+response is to adapt, not to defend.
+
+---
+
+## The migration plan for python-blackjack-v2
+
+After this template is proven, the plan is:
+
+1. Bootstrap python-blackjack-v2 from this template
+2. Populate with specs, processes, and docs — written fresh, informed
+   by v1, adapted to v2 philosophy. NOT copied from v1.
+3. Port the test suite from v1 — with v2 spec as the target.
+   Each test is evaluated: does this behaviour belong in v2's spec?
+   Does the test express it in v2 terms? Rewrite or discard if not.
+   All red after the port is the correct starting state.
+4. Port the src — adapt to v2 spec and make tests green.
+   Same discipline: v2 spec is the target, v1 is reference only.
+5. End state: blackjack-v2 is functionally equivalent to v1,
+   running under v2 rules, with honest tests and a clean spec.
+
+The backlog for blackjack-v2 is built from scratch. Adam reviews
+the v1 backlog — both done and not-done — and makes a WHAT call on
+each item. Some completed v1 work may need revisiting against the v2
+spec. The v2 backlog is not a copy of v1's with migration items prepended.
+
+---
+
+## The two unproven pieces
+
+Everything in this template is designed but not all of it is proven.
+Two things must be validated before claiming full autonomy:
+
+**1. GitHub connector write access**
+The review workflow posts a marker comment on PR open. This assumes
+the GitHub connector can write PR comments, not just fetch diffs.
+This has not been confirmed. If it cannot write, the review trigger
+mechanism needs rethinking. Do not claim two Adam touchpoints until
+this is confirmed.
+
+**2. Routines secret injection**
+Until Anthropic adds secret injection to Routines, Adam cannot be
+fully removed from the Clead to Crog trigger. Current transitional
+flow: Clead produces a curl command, Adam substitutes the token from
+his password manager and fires it. One paste, not a relay loop —
+much better than v1 but not yet fully autonomous.
+
+The v2 template is the pilot for proving both. Build it, use it on
+blackjack-v2, and either it works or it teaches you what to fix.
+
+---
+
+## What was done in the session that produced this template (2026-06-27)
+
+In the ai-project-template (v1) repo:
+- PR #37: Fixed Direction A PR flow in TEAM_STRUCTURE.md
+- PR #38: CHANGELOG entry for #37
+- PR #39: dump.sh updated — binary skip + truncation integrity check
+- PR #28 (titan-comptracker), #114 (python-blackjack), #59 (fomo-f):
+  Same dump.sh update distributed to all active repos
+- PR #40: BOOTSTRAP.md synced with new dump.sh
+- PR #44: docs/PROPOSAL_NEXT.md — initial workflow rebuild proposal
+- PR #45: docs/decisions/0001-rebuild-workflow.md — full ADR, adopted
+  as founding document of v2 template
+
+The skeleton Crog prompt for this repo was written at end of that
+session. You are reading this because Crog has executed it successfully.
+
+---
+
+## The one sentence that captures Adam's intent for this whole effort
+
+"I want to eliminate myself from tasks where my involvement
+(a) can be replaced by machine AND (b) is not adding any value."
+
+Everything in this template serves that sentence. When in doubt,
+ask: is Adam here because a machine cannot do this, or because he
+adds value? If neither, find a way to remove him from it.
+
+---
+
+## On the v1 scaffolding that was discarded
+
+The v1 tools and conventions were not wasted work. They are available
+to pick up and apply if a real problem demands them. The v2 template
+starts without them because the problems they solved no longer exist —
+not because the solutions were wrong.
+
+If you encounter a situation in v2 where something from v1 would help,
+propose it. The knowledge is in sugose/ai-project-template. The
+decision to re-add anything is Adam's WHAT call.

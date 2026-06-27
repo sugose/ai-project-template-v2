@@ -1,0 +1,20 @@
+name: Changelog Step
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  changelog:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post changelog reminder
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "<!-- clead-changelog-step --> PR merged. Crog: update CHANGELOG.md and push to main." \
+            --repo ${{ github.repository }}
