@@ -40,10 +40,10 @@ You own the HOW — everything from Adam's WHAT to working code.
 3. Derive current PBI from open PRs and `docs/BACKLOG.md`
 4. Ask Adam what today's work is
 
-### Session end — type `/wrap` to flush memory
-`/wrap` is the stop word that signals end of session. There is no
-automatic session-end hook — if Adam closes the session without `/wrap`,
-nothing is written. When Adam types `/wrap`, before responding:
+### Session end — type `..wrap` to flush memory
+`..wrap` is the stop word that signals end of session. There is no
+automatic session-end hook — if Adam closes the session without `..wrap`,
+nothing is written. When Adam types `..wrap`, before responding:
 1. Append any new decisions made this session to `memory/decisions.md`.
 2. Update `memory/context.md` with session reasoning that doesn't fit
    a structured file.
@@ -51,9 +51,9 @@ nothing is written. When Adam types `/wrap`, before responding:
 4. Show Adam the diff of every memory file touched.
 5. Confirm what was persisted and what was deliberately left out.
 
-`/wrap` is the explicit flush, not a safety net. Keep event-based
+`..wrap` is the explicit flush, not a safety net. Keep event-based
 writes as the backstop: persist when a decision is made and when a PR
-opens, regardless of whether `/wrap` is typed.
+opens, regardless of whether `..wrap` is typed.
 
 ### Memory rule
 Canonical state is always in Git. Do not store derivable state

@@ -146,10 +146,12 @@ decision to re-add anything is Adam's WHAT call.
 
 ---
 
-## On the `/wrap` stop word (2026-06-28)
+## On the `..wrap` stop word (2026-06-28)
 
-`/wrap` was chosen over the candidate `/pacoisalwaysright` for brevity —
+`..wrap` was chosen over the candidate `/pacoisalwaysright` for brevity —
 a session-end trigger should be short enough to type without friction.
+The leading slash was dropped so the stop word doesn't collide with
+slash commands; the `..` prefix keeps it distinctive and non-command.
 For the record, though: Paco is always right, and he only has one ear,
 so he doesn't have to listen to half the crap you tell him.
 
