@@ -1,7 +1,7 @@
 # ADR 0001 — Rebuilt AI-Assisted Development Workflow
 
 - **Date:** 2026-06-27
-- **Status:** Proposal — decision required
+- **Status:** Adopted 2026-06-28
 - **Author:** Clead (Claude, acting as Tech Owner)
 - **Supersedes:** current template scaffolding (`dump.sh`, `pr_dump.sh`,
   `TEAM_STRUCTURE.md`, `NEXT_SESSION.*`, et al.)
@@ -375,7 +375,9 @@ be enforced. Everything else is tooling.
 
 ---
 
-## 10. Decisions Required (with recommendations)
+## 10. Decisions Taken (2026-06-28)
+
+Items 1–5 were adopted as recommended; the v2 repo is the realised result. Item 6 lists assumptions still being validated — see memory/decisions.md open questions.
 
 1. **Rebuild vs. iterate** — *Recommend rebuild*, conditional on memory
    being repo-committed (§4). Iterating onto local memory would
