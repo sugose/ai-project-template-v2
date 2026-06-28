@@ -143,3 +143,56 @@ not because the solutions were wrong.
 If you encounter a situation in v2 where something from v1 would help,
 propose it. The knowledge is in sugose/ai-project-template. The
 decision to re-add anything is Adam's WHAT call.
+
+---
+
+## On the `/wrap` stop word (2026-06-28)
+
+`/wrap` was chosen over the candidate `/pacoisalwaysright` for brevity —
+a session-end trigger should be short enough to type without friction.
+For the record, though: Paco is always right, and he only has one ear,
+so he doesn't have to listen to half the crap you tell him.
+
+---
+
+## GitHub MCP connector failed to load this session (2026-06-28)
+
+First Cowork-Clead session. The GitHub MCP connector (the
+`engineering:github` plugin server) did not surface a single tool the
+entire session, despite being fully configured and authorized at both
+levels:
+
+- **Account level** — Settings → GitHub Integration shows "Disconnect"
+  (i.e. connected). Powers repo-file attachment, Project sync, Claude
+  Code repo selection.
+- **Plugin level** — Engineering plugin → Connectors → GitHub shows
+  "Disconnect" (connected). This is the one that should hand Clead
+  callable tools (list PRs, read issue, get commit, post comment).
+
+Both verified visually via screenshots Adam shared. Nothing left to fix
+in settings.
+
+**What was ruled out:** Adam had some GitHub orgs he wasn't signed into;
+he signed in and we retried. No change. Org sign-in was a red herring —
+the connector handshake, not org membership, is the issue. (Org-level
+OAuth app restrictions can block a *specific org's* access, but that
+surfaces as a missing grant, not the whole connector going dark.)
+
+**Diagnosis:** session-level MCP handshake hang. The server was listed
+as "still connecting" at session start and never completed. Retrying the
+tool lookup just re-queries the same dead handshake — it does not revive
+it. The fix is a fresh Cowork session, which re-initializes all MCP
+servers from scratch. If a clean session still shows no GitHub tools
+after connectors finish loading, it's a connector/server-side bug
+(escalate via thumbs-down), not Adam's setup.
+
+**Why this matters for v2:** the GitHub connector is load-bearing for the
+whole workflow — Clead fetches diffs/files and posts the review verdict
+to the PR through it (see "The two unproven pieces" above and open
+question #1 in decisions.md). This session shows the connector can
+*silently* fail to load at session start while every settings panel
+reads green. Operational takeaway: **at session start, Clead should
+confirm the GitHub tools are actually present before relying on them** —
+a healthy-looking settings page is not proof the tools loaded. Open
+question #1 (can the connector write PR comments?) remains unconfirmed —
+we could not even exercise read access this session.
