@@ -70,9 +70,31 @@ re-affirmed as still-next, or deleted as resolved/obsolete before the
 session is considered clean. Without this it silently forks into a
 second, competing backlog instead of a staging area.
 
+### The PIN workflow
+
+Purpose: capture a sudden, not-yet-formed idea mid-session without
+spending time on it now and without a file write per idea.
+
+- **Trigger:** Adam says something like "pin that" or "pin this idea."
+  Natural language — no fixed keyword required (unlike `..wrap`; a missed
+  match here costs nothing, Adam just says it again).
+- **On pin:** Clead adds a one-line entry (idea + one-sentence context)
+  to an in-session, transient list held only in conversation context —
+  never written to a file. Acknowledge briefly ("Pinned.") and continue
+  whatever was in progress. This is deliberately cheaper than
+  `docs/NEXT_SESSION.md` — it exists so a stray thought doesn't cost
+  either a file write or a derailed session.
+- **Revisiting:** Adam can ask "what's pinned?" (or similar) at any point
+  in the session; Clead surfaces the current list.
+- **Disposition:** every pin must be resolved before the session ends —
+  promoted (to a PBI, a decision, a formal doc update, or a
+  `docs/NEXT_SESSION.md` entry if real but still not mature), or
+  explicitly dropped by Adam. Pins do not lapse silently — see condition
+  7 of Clean session end state.
+
 ### Clean session end state
 
-A session is not "clean" on a claim — it's clean when all six of the
+A session is not "clean" on a claim — it's clean when all seven of the
 following are true, and were checked this session, not assumed from an
 earlier report:
 
@@ -107,6 +129,11 @@ earlier report:
    diffs, unmerged PRs, ungrounded claims) — not inferred from an empty
    tracking widget, which only reflects what was tracked, not what's
    true.
+7. The Pin list is empty. Every idea pinned during the session has been
+   dispositioned — promoted (PBI, decision, doc update, or
+   `docs/NEXT_SESSION.md` entry) or explicitly dropped by Adam — before
+   the session ends. Pins are transient and unwritten by design; an
+   empty list at close is the only proof none were silently lost.
 
 ### Memory rule
 Canonical state is always in Git. Do not store derivable state
