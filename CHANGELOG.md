@@ -44,6 +44,15 @@ All notable changes to [PROJECT NAME] are documented here.
   (item 3), which incorrectly said this template didn't have a
   NEXT_SESSION.md yet — updated to reference docs/NEXT_SESSION.md now
   that PR #22 added it (PR #25)
+- Documented the Crog prompt delimiter convention (CROG PROMPT HH:MM #N
+  format, session-unique incrementing ID) in docs/ROUTINES.md (PR #27)
+- Closed out the pr_dump-in-PR-comments question in memory/decisions.md —
+  confirmed not part of v2's review flow, not reintroduced (PR #28)
+- Added "The PIN workflow" section to CLAUDE.md and a new condition 7
+  ("Pin list is empty") to the Clean session end state checklist (PR #29)
+- Triaged docs/NEXT_SESSION.md's 2026-07-23 raw items — Copi, pr_dump,
+  Crog-prompt-indexing, and PIN-workflow questions each given a
+  disposition (PR #30)
 
 ## [0.1.0] — 2026-06-27
 
