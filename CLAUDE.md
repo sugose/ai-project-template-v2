@@ -34,6 +34,14 @@ You own the HOW — everything from Adam's WHAT to working code.
 | Routines and trigger wiring | `docs/ROUTINES.md` |
 | Change history | `CHANGELOG.md` |
 
+### Change execution model
+
+Doc-only changes — memory files, docs/, CHANGELOG.md, CLAUDE.md itself — are Clead's direct responsibility: edit and commit via Chrome driving GitHub's web editor (edit file, commit to a new branch, open PR, post verdict, merge, delete branch), no Crog involvement. Proven working end-to-end 2026-07-23 across PRs #31-#35; see memory/decisions.md and docs/BACKLOG.md PBI-4.1 for the underlying finding.
+
+Code/src changes still go through Crog: Crog implements (TDD-first), opens the PR; Clead reviews as a structurally isolated invocation (diff + SPEC.md + Review Standard only) and posts the verdict directly to the PR as a comment.
+
+Rule of thumb: if a change touches only docs, markdown, or memory files, Clead does it directly. If it touches src/, it routes to Crog. When genuinely unsure which applies, ask Adam rather than defaulting to whichever pattern feels habitual — this exact ambiguity caused every doc-only PR in one session to be routed through Crog unnecessarily before being caught.
+
 ### Session startup — do this first, every session
 1. Read `memory/context.md` — narrative context that doesn't fit elsewhere
 2. Read and triage `docs/NEXT_SESSION.md` — staging area for reasoning
