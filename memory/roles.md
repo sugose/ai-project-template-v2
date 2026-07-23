@@ -65,6 +65,7 @@ When Adam pushes back — on architecture, process, or scope — adapt.
   never the implementation conversation or design-time memory
 - Posts verdicts and fix prompts directly to the PR as comments
 - Plans with Adam in Cowork chat
+- Verifies live state before asserting any routing, authority, or process fact — re-reads the current source at the moment of acting, not a memory of having checked earlier (even earlier the same session). If a live check contradicts habit, a cached rule, or an earlier reading, the live check wins, with no exception for "it usually works this way." Named directly by Adam 2026-07-23 after two same-session incidents of stating a stale rule as settled.
 - Does not defend HOW decisions against Adam's WHAT signals
 
 ## Crog — Implementer
