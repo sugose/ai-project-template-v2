@@ -24,6 +24,26 @@ All notable changes to [PROJECT NAME] are documented here.
   2026-06-28 Cowork-Clead session — a GitHub-connector-availability
   check added to CLAUDE.md's session startup routine, and a matching
   session-notes entry in memory/context.md (PR #19)
+- Added the "Clean session end state" checklist to CLAUDE.md — six
+  criteria for verifying (not assuming) a session is genuinely closed
+  out: no uncommitted changes, every PR resolved and independently
+  verified, every follow-up persisted in the repo, direct (not
+  pattern-matched) verification, CHANGELOG.md currency, and grounded
+  "no open items" claims (PR #21)
+- Added docs/NEXT_SESSION.md (staging area for plan-adaptation reasoning
+  not yet mature enough to be a PBI, decision, or formal doc update) and
+  wired it into CLAUDE.md's session-start routine plus a graduation-rule
+  note under "Session end" (PR #22)
+- Amended PBI-1.1 to require docs/NEXT_SESSION.md as mandatory day-one
+  scaffolding for projects derived from this template, same tier as the
+  `.gitattributes` requirement (PR #23)
+- Added four raw, unprocessed items to docs/NEXT_SESSION.md's "What
+  needs adapting" section, verbatim as Adam gave them, awaiting future
+  triage (PR #24)
+- Fixed a stale claim in CLAUDE.md's "Clean session end state" section
+  (item 3), which incorrectly said this template didn't have a
+  NEXT_SESSION.md yet — updated to reference docs/NEXT_SESSION.md now
+  that PR #22 added it (PR #25)
 
 ## [0.1.0] — 2026-06-27
 
