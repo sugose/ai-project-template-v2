@@ -53,6 +53,14 @@ All notable changes to [PROJECT NAME] are documented here.
 - Triaged docs/NEXT_SESSION.md's 2026-07-23 raw items — Copi, pr_dump,
   Crog-prompt-indexing, and PIN-workflow questions each given a
   disposition (PR #30)
+- Clarified the merge approval/execution split in memory/roles.md — Adam's act of requesting or pasting an already-presented, approved merge prompt is itself the approval; the mechanical click may be delegated to Crog or Clead (PR #31)
+- Added CHANGELOG entries for PRs #27-#30 (this entry's own PR) (PR #32)
+- Removed the resolved 2026-07-23 triage entries from docs/NEXT_SESSION.md now that all four items had a disposition (PR #33)
+- Added a memory/decisions.md entry confirming doc-only changes can be committed directly via Chrome driving GitHub's web editor, with no Crog involvement (PR #34)
+- Marked docs/BACKLOG.md PBI-4.1 confirmed — the Chrome-web-editor direct edit/commit/PR/merge path proven end-to-end (PR #35)
+- Added an explicit "Change execution model" section to CLAUDE.md distinguishing Clead-direct doc-only changes from Crog-implemented code changes (PR #36)
+- Added a "verify live state before asserting routing/authority/process facts" discipline to Clead's role rules in memory/roles.md, ported from local Cowork auto-memory so it persists in the repo (PR #37)
+- Added a scope note to docs/ROUTINES.md clarifying it describes the Crog PR flow only, cross-referencing CLAUDE.md's Change execution model section for doc-only changes (PR #38)
 
 ## [0.1.0] — 2026-06-27
 
