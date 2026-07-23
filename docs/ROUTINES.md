@@ -1,5 +1,7 @@
 # Routines and Trigger Wiring
 
+*Scope note: this document describes the Crog-implemented, code/src PR flow only. Doc-only changes (memory/, docs/, CHANGELOG.md, CLAUDE.md itself) skip all of the below — Clead edits and commits them directly via Chrome driving GitHub's web editor, no Crog, no review dispatch. See CLAUDE.md's "Change execution model" section for the routing rule.*
+
 ## Current state (transitional)
 
 Until GitHub Actions review dispatch and Routines secret injection
