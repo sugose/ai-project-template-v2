@@ -317,17 +317,13 @@ to fall out of a chat session.
   model above — no separate review gate needed, but must still go
   through its own PR.
 
-- **[NEXT] PBI-P.2** — Fix stale "push to main" wording in
-  `.github/workflows/changelog.yml`. The workflow posts an automated
-  PR-merge reminder comment reading "Crog: update CHANGELOG.md and push
-  to main" — this instruction conflicts with the change-control model
-  above (rule 1: every change via PR, no exceptions). Confirmed with
-  Adam directly on 2026-07-23 that there is no exception for this case.
-  Update the reminder text to instruct routing the CHANGELOG.md update
-  through a PR like everything else. This is a workflow/tooling file —
-  a system change under the model above, so it needs the other party's
-  review (Crog, if Clead drafts it) before merge, same as any other
-  architectural change.
+- **[DONE] PBI-P.2** — Fixed stale "push to main" wording in
+  `.github/workflows/changelog.yml`. The workflow's automated PR-merge
+  reminder comment previously read "Crog: update CHANGELOG.md and push
+  to main" — conflicting with the change-control model above (rule 1:
+  every change via PR, no exceptions). Confirmed with Adam directly on
+  2026-07-23 that there is no exception for this case. Reminder text
+  updated to "Crog: open a PR updating CHANGELOG.md."
 
 ---
 
