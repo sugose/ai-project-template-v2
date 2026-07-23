@@ -1,6 +1,6 @@
 # [PROJECT NAME] — Next Session Planning
 
-**Last Updated:** [never — this is a fresh scaffold]
+**Last Updated:** 2026-07-23
 **Author:** Clead (Tech Owner)
 **Purpose:** Staging area for reasoning, revised assumptions, and
 plan-adaptation thoughts that aren't yet mature enough to be a PBI, a
@@ -20,30 +20,92 @@ backlog items.
 
 ## Current situation summary
 
-*(One or two paragraphs: where the project actually stands right now —
-what's built, what's proven, what the next concrete milestone is. Replace
-this each time it goes stale — don't just append below it.)*
+The Chrome-web-editor direct-commit path for doc-only changes (memory/,
+docs/, CHANGELOG.md, CLAUDE.md itself) is proven end-to-end and now
+documented in CLAUDE.md's "Change execution model" section (PR #36),
+cross-referenced from docs/ROUTINES.md (PR #38). CHANGELOG.md is current
+through PR #38. A "verify live state before asserting routing/authority/
+process facts" discipline has been added to Clead's role rules in
+memory/roles.md (PR #37), ported from local Cowork auto-memory so it's
+no longer session-local-only. The six items below were pinned mid-session
+on 2026-07-23 and are being promoted here verbatim, unprocessed, because
+Adam had to end the session before triaging them — none have been
+evaluated or actioned yet.
 
 ---
 
 ## What needs adapting
 
-*(Numbered entries, one per thought. Use this shape as a starting point,
-not a rigid template — capturing the reasoning matters more than filling
-every field:)*
+### 1. Apply v2 workflows and rules on all other projects — new
 
-### N. [Short title] — [new / revised / superseded]
+**Previous assumption:** n/a — new idea.
+**Revised assessment:** not yet evaluated.
+**Impact on plan:** unknown — could mean porting CLAUDE.md/memory
+structure, the PIN workflow, the Change execution model, etc. to other
+repos.
+**Action:** discuss scope with Adam — which projects, which parts of the
+v2 workflow, and whether "apply" means copy-once or keep-in-sync.
 
-**Previous assumption:** ...
-**Revised assessment:** ...
-**Impact on plan:** ...
-**Action:** ... (what a future session should actually do about this)
+### 2. What can be done from the mobile phone — new
+
+**Previous assumption:** n/a — new idea.
+**Revised assessment:** not yet evaluated.
+**Impact on plan:** unknown — likely about Cowork/Claude mobile access
+to this workflow, not a repo change per se.
+**Action:** clarify with Adam what "done" means here (read-only checks?
+approvals? full sessions?) before scoping any work.
+
+### 3. Can the AI portions of v2 be ported to another AI than Claude (Cowork/Code) — new
+
+**Previous assumption:** n/a — new idea.
+**Revised assessment:** not yet evaluated.
+**Impact on plan:** could affect how much of CLAUDE.md/roles.md is
+Claude-specific vs. portable; potentially a significant scoping question.
+**Action:** discuss with Adam what's driving this (contingency planning?
+vendor flexibility?) before analyzing portability.
+
+### 4. De-Adamify the v2 end-product — new
+
+**Previous assumption:** n/a — new idea.
+**Revised assessment:** not yet evaluated.
+**Impact on plan:** would mean genericizing Adam-specific references
+(roles.md, CLAUDE.md, etc.) into a productized template component.
+**Action:** clarify scope with Adam — is this about this template repo
+specifically, or a downstream product? What stays as example content vs.
+becomes configurable?
+
+### 5. Simplifications to process due to no longer needed workflows/workflow steps — new
+
+**Previous assumption:** n/a — new idea.
+**Revised assessment:** not yet evaluated. Likely prompted by this
+session's discovery that some process steps (e.g. routing doc-only
+changes through Crog) were unnecessary/obsolete once the Chrome-direct
+path was proven.
+**Action:** next session, audit CLAUDE.md/docs/ROUTINES.md for other
+steps that may now be redundant given the Change execution model split.
+
+### 6. Graduation and ..wrap workflows — needed or obsolete? — new
+
+**Previous assumption:** the graduation rule (every NEXT_SESSION.md entry
+gets a disposition each touched session) and the `..wrap` stop-word flush
+are both load-bearing parts of the session-end process.
+**Revised assessment:** not yet evaluated — Adam is questioning whether
+these are still needed or have become obsolete, possibly given how much
+more is now committed directly and verifiably via PRs rather than relying
+on end-of-session memory flushes.
+**Action:** discuss with Adam what prompted this doubt — likely worth
+revisiting once the six items in this file have their first real
+graduation cycle, to see if the mechanism still earns its keep.
 
 ---
 
 ## Items that do not change
 
-*(Short bullet list — things confirmed still valid, so a future session
-doesn't waste time re-deriving them. Prune entries here once they're
-foundational enough to belong in `docs/decisions/` or
-`memory/decisions.md` instead.)*
+- The Chrome-web-editor direct-commit path (edit → commit to new branch →
+- PR → verdict comment → squash-merge → delete branch) is confirmed
+- working for doc-only changes, no Crog, no local git. See PBI-4.1 in
+- docs/BACKLOG.md and memory/decisions.md.
+- - Code/src changes still route through Crog (implements TDD-first, opens
+  - PR); Clead reviews as a structurally isolated invocation and posts the
+  - verdict on the PR.
+  - 
