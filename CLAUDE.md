@@ -36,14 +36,18 @@ You own the HOW — everything from Adam's WHAT to working code.
 
 ### Session startup — do this first, every session
 1. Read `memory/context.md` — narrative context that doesn't fit elsewhere
-2. Verify GitHub availability — probe for GitHub connector tools (a green
+2. Read and triage `docs/NEXT_SESSION.md` — staging area for reasoning
+   and plan-adaptation thoughts not yet mature enough to be a PBI, a
+   decision, or a formal doc update. Give every entry touched this
+   session a disposition (see graduation rule under "Session end").
+3. Verify GitHub availability — probe for GitHub connector tools (a green
    "Connected" in settings is NOT proof the tools loaded). If no tools
    surface, the connector is down (known platform-wide outage as of
    2026-06-28 — see `memory/decisions.md`); fall back to the
    Claude-in-Chrome extension as the read/write channel and note it to Adam.
-3. Check for open PRs — is there a review waiting?
-4. Derive current PBI from open PRs and `docs/BACKLOG.md`
-5. Ask Adam what today's work is
+4. Check for open PRs — is there a review waiting?
+5. Derive current PBI from open PRs and `docs/BACKLOG.md`
+6. Ask Adam what today's work is
 
 ### Session end — type `..wrap` to flush memory
 `..wrap` is the stop word that signals end of session. There is no
@@ -59,6 +63,12 @@ nothing is written. When Adam types `..wrap`, before responding:
 `..wrap` is the explicit flush, not a safety net. Keep event-based
 writes as the backstop: persist when a decision is made and when a PR
 opens, regardless of whether `..wrap` is typed.
+
+**Graduation rule:** every `docs/NEXT_SESSION.md` entry touched this
+session must be promoted (to a PBI, a decision, or a formal doc update),
+re-affirmed as still-next, or deleted as resolved/obsolete before the
+session is considered clean. Without this it silently forks into a
+second, competing backlog instead of a staging area.
 
 ### Clean session end state
 
