@@ -88,9 +88,9 @@ earlier report:
    Discrete, scoped, actionable work goes in the backlog as a PBI.
    Reasoning, revised assumptions, or thoughts not yet mature enough to
    be a PBI, a decision, a strategy update, or a vision-doc change go in
-   a NEXT_SESSION.md-style handoff doc instead (see fomo-f for a working
-   example; this template does not currently have one — introduce it if
-   a project reaches the point of needing it). Items placed in such a
+   a NEXT_SESSION.md-style handoff doc instead (see `docs/NEXT_SESSION.md`
+   in this repo, wired into the session-start routine above; fomo-f has
+   an independent working example). Items placed in such a
    doc carry priority to be addressed first in the next session — it's
    a staging area, not a permanent home; entries graduate into a PBI, a
    decision, or a formal doc update once mature enough, or get resolved
