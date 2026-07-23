@@ -86,13 +86,16 @@ autonomy. Use a real project (python-blackjack-v2) as the pilot.
   is confirmed, replace the manual "Adam pastes PR URL to Clead" step
   with an automated trigger. Clead's review Routine receives the PR
   diff, SPEC.md, and Review Standard as scoped inputs only.
-  Implementation note (confirmed in fomo-f, 2026-07-23): if Clead fetches
-  PR state via Claude-in-Chrome (the Chrome fallback channel, see
-  decisions.md), the PR URL must carry an incrementing cache-busting
-  query param (e.g. `?i=N`, incremented on every fetch) — GitHub PR pages
-  can serve a stale cached view otherwise, showing an old commit/diff as
-  current. Cross-check against local `git log`/`git diff` where a shared
-  working directory is available — more reliable than the browser alone.
+  Implementation note (confirmed in fomo-f, 2026-07-23): when Clead
+  fetches PR state via Claude-in-Chrome (the Chrome fallback channel, see
+  decisions.md), Clead itself must append an incrementing cache-busting
+  query param on every fetch (e.g. `?i=1`, `?i=2`...) — GitHub PR pages
+  can otherwise serve a stale cached view, showing an old commit/diff as
+  current. This is Clead's own fetch-time responsibility only — Crog does
+  NOT need to add this param when reporting a PR URL back; a plain URL is
+  fine, Clead appends the cache-buster itself when it fetches. Cross-check
+  against local `git log`/`git diff` where a shared working directory is
+  available — more reliable than the browser alone.
 
 - **[LATER] PBI-2.3** — Confirm Routines secret injection timeline with
   Anthropic. Once available, wire Clead→Crog trigger so Adam is no
