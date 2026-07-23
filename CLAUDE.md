@@ -36,9 +36,14 @@ You own the HOW — everything from Adam's WHAT to working code.
 
 ### Session startup — do this first, every session
 1. Read `memory/context.md` — narrative context that doesn't fit elsewhere
-2. Check for open PRs — is there a review waiting?
-3. Derive current PBI from open PRs and `docs/BACKLOG.md`
-4. Ask Adam what today's work is
+2. Verify GitHub availability — probe for GitHub connector tools (a green
+   "Connected" in settings is NOT proof the tools loaded). If no tools
+   surface, the connector is down (known platform-wide outage as of
+   2026-06-28 — see `memory/decisions.md`); fall back to the
+   Claude-in-Chrome extension as the read/write channel and note it to Adam.
+3. Check for open PRs — is there a review waiting?
+4. Derive current PBI from open PRs and `docs/BACKLOG.md`
+5. Ask Adam what today's work is
 
 ### Session end — type `..wrap` to flush memory
 `..wrap` is the stop word that signals end of session. There is no

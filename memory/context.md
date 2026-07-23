@@ -198,3 +198,31 @@ confirm the GitHub tools are actually present before relying on them** —
 a healthy-looking settings page is not proof the tools loaded. Open
 question #1 (can the connector write PR comments?) remains unconfirmed —
 we could not even exercise read access this session.
+
+---
+
+## Session 2026-06-28 (second Cowork-Clead session)
+
+Short session, mostly orientation and process. Four things worth keeping:
+
+1. **Connector outage is platform-wide, confirmed.** A web search found
+   multiple matching reports — the exact Cowork-Windows "Connected but no
+   tools" symptom (#57589, #61682) and a dated regression that broke
+   ~June 25 and stayed broken (#71542). It's a server-side Anthropic
+   issue, not Adam's setup — "bad timing" that we stood up v2 right as it
+   landed. The Chrome fallback stands; revisit the connector if it recovers.
+
+2. **Startup routine now checks GitHub availability** (CLAUDE.md step 2).
+   Codifies the takeaway above so a future session probes before relying
+   on the connector. Working-folder edit — not yet in Git.
+
+3. **No dedicated hurdles log.** Adam's call: not worth millimeter
+   tracking. Assemble retrospectives on demand from decisions.md and
+   context.md when wanted.
+
+4. **Communication-style feedback.** Adam: I was overwhelming him with
+   facts, options, and perspectives. v1 (Claude Chat as Clead) was
+   smoother. Corrected posture: answer the question asked, one
+   recommendation not a menu, hold caveats unless asked. Saved to Cowork
+   auto-memory; recorded here too so it survives across machines/clones
+   (auto-memory is local-only). Default to concise.
