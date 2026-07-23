@@ -142,7 +142,7 @@ works on a real, complex project.
 changes and session-end writes, and reactivate Copi as a specialist
 third-layer reviewer for complex src PRs.
 
-- **[LATER] PBI-4.1** — Verify Cowork direct file write capability.
+- **[DONE] PBI-4.1** — Verify Cowork direct file write capability.
   Test whether Cowork-Clead can write files, commit, push, and open
   a PR directly from its working folder without going through Crog.
   If confirmed: doc-only changes (memory files, backlog, CHANGELOG,
@@ -162,6 +162,8 @@ third-layer reviewer for complex src PRs.
   one bundled "direct write" question. Before Cowork-Clead commits/pushes
   on its own, check for an active `.git/index.lock` (or equivalent) and
   avoid concurrent git access with Crog on the same repo.
+
+  **Confirmed 2026-07-23 (this session):** the Chrome-web-editor path is proven end-to-end. Clead edited memory/decisions.md directly through GitHub's web file editor via Chrome, committed to a new branch, and opened PR #34 with no Crog involvement and no local git — then squash-merged and deleted the branch the same way. Four PRs total (#31-#34) were authored, reviewed (verdicts posted directly on each PR), merged, and cleaned up entirely through Chrome this session. This confirms the practical goal of this PBI (Clead-authored doc-only PRs bypass Crog) via the Chrome-web-editor mechanism specifically. The local-sandbox git push/commit mechanism (via Bash) remains a separate, unconfirmed, hazard-prone capability — see the git-lock finding above — and is intentionally left open; Chrome is the proven default for doc-only changes going forward.
 
 - **[LATER] PBI-4.2** — Implement event-driven memory writes in CLAUDE.md.
 
