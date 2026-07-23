@@ -32,6 +32,15 @@ this each time it goes stale — don't just append below it.)*
 not a rigid template — capturing the reasoning matters more than filling
 every field:)*
 
+### Raw items — 2026-07-23 (unprocessed, verbatim, not yet triaged)
+
+1. do you remember Copi?
+2. are pr_dumps still used in the communication between crog and clead?
+   is pr_dumps in PR comments still necessary for Clead to review
+   changes made by Crog
+3. i want to index Crog prompts
+4. Formalizing the PIN workflow
+
 ### N. [Short title] — [new / revised / superseded]
 
 **Previous assumption:** ...
