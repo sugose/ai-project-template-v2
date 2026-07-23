@@ -34,6 +34,16 @@ Coverage percentage and test count are necessary but not sufficient.
 
 ## 5. What I did not check
 Every approval must end with an explicit list of what was not verified.
+A claim of "checked" or "confirmed" must come from a check that actually
+verifies the specific claim — not a proxy signal (e.g. a keyword or
+substring match on a page) that can produce false positives. If the
+available check is indirect, either do the direct check instead, or
+state the claim with its real uncertainty rather than asserting it
+flatly. (Real incident, fomo-f, 2026-07-23: claimed a PR review comment
+existed based on a page-text keyword match; it was a false positive from
+unrelated content elsewhere on the page. Caught only because the user
+asked for clarification — the check itself had not actually confirmed
+anything.)
 
 ## 6. Verdict discipline
 - Verdict posted directly as a PR comment. No relay through Adam.

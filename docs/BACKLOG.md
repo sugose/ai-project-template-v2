@@ -28,6 +28,16 @@ get a working project in any supported language.
   requirements.txt, requirements-dev.txt, pre-commit-config.yaml,
   gitignore, vscode settings, placeholder test. Adapt to v2 structure.
   Also create `docs/DEV_INFRASTRUCTURE.md` covering:
+  - **`.gitattributes` with an explicit line-ending policy (e.g.
+    `* text=auto eol=lf`), committed as part of initial scaffolding —
+    not optional, not added later.** Justification: fomo-f (running v1
+    workflow) hit three separate rounds of full-file corruption on the
+    same PR (2026-07-23) from VS Code's `files.eol: auto` silently
+    rewriting entire files on save when a Cowork-Clead edit and a
+    Windows-side edit touched the same file. Root cause confirmed by
+    Crog; fix was reactive, after real damage. A pinned `.gitattributes`
+    from day one prevents the whole class of bug rather than discovering
+    it mid-project.
   - Language-agnostic content: new machine setup sequence, CI/CD
     philosophy, branch protection runbook, commit message convention
   - Python-specific content: venv setup (macOS and Windows),
@@ -76,6 +86,13 @@ autonomy. Use a real project (python-blackjack-v2) as the pilot.
   is confirmed, replace the manual "Adam pastes PR URL to Clead" step
   with an automated trigger. Clead's review Routine receives the PR
   diff, SPEC.md, and Review Standard as scoped inputs only.
+  Implementation note (confirmed in fomo-f, 2026-07-23): if Clead fetches
+  PR state via Claude-in-Chrome (the Chrome fallback channel, see
+  decisions.md), the PR URL must carry an incrementing cache-busting
+  query param (e.g. `?i=N`, incremented on every fetch) — GitHub PR pages
+  can serve a stale cached view otherwise, showing an old commit/diff as
+  current. Cross-check against local `git log`/`git diff` where a shared
+  working directory is available — more reliable than the browser alone.
 
 - **[LATER] PBI-2.3** — Confirm Routines secret injection timeline with
   Anthropic. Once available, wire Clead→Crog trigger so Adam is no
@@ -118,6 +135,19 @@ third-layer reviewer for complex src PRs.
   session-end writes) bypass Crog and the review gate entirely.
   Cowork-Clead is both author and committer. Adam merges or,
   once trust is established, Cowork merges directly.
+
+  **Partial finding (fomo-f, 2026-07-23, informal — not a v2 test but a
+  directly relevant real-world data point):** Cowork-Clead direct file
+  writes to a connected folder work fine — read/write/edit on a mounted
+  real repo folder, no issues. But git operations are a separate,
+  unresolved hazard: while Crog was mid-git-operation on the same working
+  directory, a Cowork-initiated `git status` hit `unable to unlink
+  '.git/index.lock': Operation not permitted` — a real collision, not
+  theoretical. Conclusion for this PBI: file writes and git operations
+  should probably be treated as separately-confirmed capabilities, not
+  one bundled "direct write" question. Before Cowork-Clead commits/pushes
+  on its own, check for an active `.git/index.lock` (or equivalent) and
+  avoid concurrent git access with Crog on the same repo.
 
 - **[LATER] PBI-4.2** — Implement event-driven memory writes in CLAUDE.md.
 
