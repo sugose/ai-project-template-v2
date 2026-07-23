@@ -16,5 +16,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr comment ${{ github.event.pull_request.number }} \
-            --body "<!-- clead-changelog-step --> PR merged. Crog: update CHANGELOG.md and push to main." \
+            --body "<!-- clead-changelog-step --> PR merged. Crog: open a PR updating CHANGELOG.md." \
             --repo ${{ github.repository }}
