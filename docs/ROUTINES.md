@@ -39,3 +39,21 @@ It must **not** receive:
 This is a hard constraint. Reviewer independence is structural,
 not conventional. Same-session context reset is not sufficient —
 the context remains in the window and will influence the review.
+
+## Crog prompt conventions
+
+When Clead hands Crog a prompt, it is wrapped in a delimiter block:
+
+    ========== CROG PROMPT HH:MM #N ==========
+    <prompt text>
+    ====================================
+
+- **HH:MM** — 24h local time, freshly checked at write time (not
+  reused from a prior prompt in the session).
+- **#N** — a session-unique ID, starting at `#1` and incrementing by
+  one for every subsequent Crog prompt in that same Clead session,
+  regardless of which repo or PR the prompt concerns. Clead maintains
+  this counter itself — it is not Adam's manual bookkeeping.
+- **Purpose** — lets Adam identify at a glance what's meant to be
+  pasted to Crog versus commentary, and lets either party refer back
+  to a specific prompt unambiguously (e.g. "see CROG PROMPT 10:47 #1").
