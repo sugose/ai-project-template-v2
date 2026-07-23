@@ -38,6 +38,17 @@ get a working project in any supported language.
     Crog; fix was reactive, after real damage. A pinned `.gitattributes`
     from day one prevents the whole class of bug rather than discovering
     it mid-project.
+  - **`docs/NEXT_SESSION.md`, seeded from the template stub, committed as
+    part of initial scaffolding for every project derived from this
+    template — not optional, not added later.** Justification: fomo-f
+    (running v1 workflow) has this exact file, but it was introduced
+    reactively mid-project, was never wired into the session-start
+    routine, and went stale for nearly a month as a result (confirmed
+    2026-07-23: zero references to it anywhere outside the file itself).
+    A project bootstrapped from this template should inherit both the
+    file and its wiring (session-start read+triage step,
+    graduation/expiry rule) from day one, the same way v2 itself now has
+    it.
   - Language-agnostic content: new machine setup sequence, CI/CD
     philosophy, branch protection runbook, commit message convention
   - Python-specific content: venv setup (macOS and Windows),
