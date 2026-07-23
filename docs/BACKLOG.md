@@ -280,6 +280,57 @@ third-layer reviewer for complex src PRs.
 
 ---
 
+## Process & team documentation
+
+Committed follow-up work, not raw ideas — tracked here rather than left
+to fall out of a chat session.
+
+- **[NEXT] PBI-P.1** — Document the explicit change-control model Adam
+  stated on 2026-07-23 in `CLAUDE.md` and/or `memory/decisions.md` — it
+  currently exists only in Clead's private cross-session memory, not in
+  this repo, which conflicts with the project's own single-source-of-
+  truth principle. Model to document:
+  1. Every change goes through a PR. No direct commits to main,
+     regardless of author, no exceptions — including previously
+     narrow documented exceptions (see PBI-P.2 below).
+  2. One PR, one fix. Never bundle unrelated changes into a PR just
+     because they happened to be made around the same time.
+  3. Two categories require peer review (an explicit OK) before
+     merge: system/architectural changes (typically Clead-authored,
+     Crog's OK required) and code changes of any kind — business
+     logic, tests, config, tooling (typically Crog-authored, Clead's
+     OK required). The review obligation follows the category, not
+     strictly "whoever happened to author it" — if roles are reversed
+     for a given change, the review still applies the normal way.
+  4. Everything else is Clead's own call — no review gate required,
+     but still goes through a PR (rule 1). Matches and generalizes the
+     existing 2026-06-27 decision that doc-only Cowork-Clead changes
+     skip the review gate.
+  5. When Clead lacks the capability to execute something itself
+     (e.g. no git push credentials in the Cowork sandbox — confirmed
+     repeatedly this session for both this repo and fomo-f), Clead
+     writes a prompt for whoever can (Crog or Adam) — an execution
+     handoff, not a review handoff.
+  6. When genuinely unsure whether to act alone or involve someone
+     else, Clead asks Adam directly rather than guessing either way.
+  This PBI itself is a doc-only, "everything else" change under the
+  model above — no separate review gate needed, but must still go
+  through its own PR.
+
+- **[NEXT] PBI-P.2** — Fix stale "push to main" wording in
+  `.github/workflows/changelog.yml`. The workflow posts an automated
+  PR-merge reminder comment reading "Crog: update CHANGELOG.md and push
+  to main" — this instruction conflicts with the change-control model
+  above (rule 1: every change via PR, no exceptions). Confirmed with
+  Adam directly on 2026-07-23 that there is no exception for this case.
+  Update the reminder text to instruct routing the CHANGELOG.md update
+  through a PR like everything else. This is a workflow/tooling file —
+  a system change under the model above, so it needs the other party's
+  review (Crog, if Clead drafts it) before merge, same as any other
+  architectural change.
+
+---
+
 ## Decision log (updated)
 
 | Date | Decision | Rationale |
